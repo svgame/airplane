@@ -1,0 +1,56 @@
+#gitignore
+# Ignore thumbnails created by windows
+Thumbs.db
+
+# Ignore files build by Visual Studio
+*.obj
+*.exe
+*.pdb
+*.aps
+*.vspscc
+*_i.c
+*.i
+*.icf
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.apk
+[Bb]in
+[Dd]ebug/
+[Dd]ebug.win32/
+*.sbr
+*.sdf
+obj/
+[Rr]elease/
+[Rr]elease.win32/
+_ReSharper*/
+[Tt]est[Rr]esult*
+ipch/
+*.opensdf
+
+# Ignore files build by ndk and eclipse
+libs/
+bin/
+dist/
+obj/
+gen/
+assets/
+proguard/
+local.properties
+.settings/
+build.xml
+lint.xml
+*.class
+
+# Ignore python compiled files
+*.pyc
+
+# Ignore vim swaps
+*.swp
+*.swo
