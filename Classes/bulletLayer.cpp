@@ -3,6 +3,16 @@
 
 using namespace cocos2d;
 
+bulletLayer::bulletLayer()
+	:bullet_atk(2)
+{
+	sp_bullet_array.clear(); 
+	sp_batch_bullet = nullptr;
+}
+bulletLayer::~bulletLayer()
+{
+	sp_bullet_array.clear();
+}
 // on "init" you need to initialize your instance
 bool bulletLayer::init()
 {
@@ -70,5 +80,7 @@ void bulletLayer::bullet_shoot_end(Sprite *psender)
 		this->sp_batch_bullet->removeChild(bullet,true);
 	}
 }
+
+
 
 

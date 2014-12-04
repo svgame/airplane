@@ -11,10 +11,11 @@ public:
 	~enemyLayer();
 
 	void enemy_bomb(enemySprite *sp); // 指定敌机发生爆炸
-	void remove_all_enemy();	// 清空
+	void remove_all_enemy();	// 清屏。让所有屏幕上的敌机发生爆炸
 private:
 	void add_enemy(float dt);
-	void remove_enemy(enemySprite *sp);	// 删除指定敌机
+	void remove_enemy(enemySprite *sp);	// 移除指定敌机
+	void enemy_bomb_clean(enemySprite *sp);	// 指定敌机爆炸后的清除操作。
 
 	void enemy_shoot_update(float dt);	/* schedule update 子弹击中判定 */
 	void enemy_shoot_judge();	/* 敌机被子弹击中判定 */

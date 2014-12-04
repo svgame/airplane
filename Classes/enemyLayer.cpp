@@ -1,5 +1,6 @@
 #include "enemyLayer.h"
 #include "bulletLayer.h"
+#include "planeLayer.h"
 
 using namespace cocos2d;
 
@@ -72,8 +73,21 @@ void enemyLayer::remove_enemy( enemySprite *sp )
 	}
 }
 
+void enemyLayer::enemy_bomb_clean( enemySprite *sp )
+{
+	if (sp != nullptr)
+	{
+		//sp_enemy_list.remove(sp); // 这步操作提前到爆炸动画播放前完成
+		this->removeChild(sp);
+	}
+}
 void enemyLayer::enemy_bomb(enemySprite* enemy)  
 {  
+	// 爆炸动作播放前，先将该敌机从敌机列表中踢出
+	sp_enemy_list.remove(enemy);
+	// 敌机被击中，先停止该敌机的所有动作，然后播放爆炸动作特效
+	enemy->stopAllActions();
+
 	Animation *animation = AnimationCache::getInstance()->animationByName("enemy1_down");
 	Animate *animate = Animate::create(animation);
 	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(enemyLayer::remove_enemy, this, enemy));
@@ -98,19 +112,29 @@ void enemyLayer::enemy_shoot_update( float dt )
 void enemyLayer::enemy_shoot_judge()
 {
 	bulletLayer *bullet = (bulletLayer *)this->getParent()->getChildByTag(3);
+	planeLayer *plane = (planeLayer *)this->getParent()->getChildByTag(2);
 
 	std::list<enemySprite *>::iterator iter = sp_enemy_list.begin();
 	for (iter; iter != sp_enemy_list.end(); /*waring: iter++ 不能放在此处 */)
 	{
-		if (bullet->bullet_shoot_judge(*iter))
+		enemySprite *enemy = *iter++;
+		if (plane->plane_crash_judge(enemy))
 		{
-			enemy_bomb(*iter++);
+			// todo: 主飞机发生爆炸/ 游戏该结束了。
+			enemy_bomb(enemy);
 		}
-		else
+		else if (bullet->bullet_shoot_judge(enemy))
 		{
-			iter++;
+			// 敌机被子弹击中，根据血量判定是否发生爆炸
+			enemy->lose_hp(bullet->get_bullet_atk());
+			if (enemy->get_hp() < 1)
+			{
+				enemy_bomb(enemy);
+			}
 		}
 	}
 }
+
+
 
 

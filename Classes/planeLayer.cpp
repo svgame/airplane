@@ -56,3 +56,16 @@ cocos2d::Rect planeLayer::get_plane_boundingbox()
 
 	return rect;
 }
+
+void planeLayer::plane_bomb()
+{
+	Animation* animation=Animation::create();
+	animation->setDelayPerUnit(0.2f);
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("hero_blowup_n1.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("hero_blowup_n2.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("hero_blowup_n3.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("hero_blowup_n4.png"));
+
+	Animate* animate=Animate::create(animation);
+	sp_hero->runAction(animate);
+}
