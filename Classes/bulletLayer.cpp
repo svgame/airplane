@@ -4,7 +4,7 @@
 using namespace cocos2d;
 
 bulletLayer::bulletLayer()
-	:bullet_atk(1)	// é»˜è®¤åˆå§‹åŒ–æ—¶é£æœºå­å¼¹çš„æ”»å‡»åŠ›ä¸º1
+	:bullet_atk(1)	// Ä¬ÈÏ³õÊ¼»¯Ê±·É»ú×Óµ¯µÄ¹¥»÷Á¦Îª1
 {
 	sp_bullet_array.clear(); 
 	sp_batch_bullet = nullptr;
@@ -24,11 +24,11 @@ bool bulletLayer::init()
 	}
 	Size xsize = Director::getInstance()->getVisibleSize();
 
-	// æ‰¹æ¬¡æ¸²æŸ“å¤„ç†
+	// Åú´ÎäÖÈ¾´¦Àí
 	sp_batch_bullet = SpriteBatchNode::create("ui/shoot.png");
 	this->addChild(sp_batch_bullet);
 
-	//å¼€å¯æ¸¸æˆ
+	//¿ªÆôÓÎÏ·
 	start_pass();
 
 	return true;
@@ -46,7 +46,7 @@ void bulletLayer::add_bullet( float dt )
 	sp_bullet_array.push_back(sp_bullet);
 
 	float xheight = xsize.height - curpos.y;
-	float xspeed = xheight/320; /* è®¡ç®—å­å¼¹éœ€é£è¡Œçš„æ—¶é—´ */
+	float xspeed = xheight/320; /* ¼ÆËã×Óµ¯Ğè·ÉĞĞµÄÊ±¼ä */
 
 	MoveTo *move = MoveTo::create(xspeed, Vec2(sp_bullet->getPositionX(), xsize.height));
 	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(bulletLayer::bullet_shoot_end, this, sp_bullet));
@@ -58,13 +58,13 @@ void bulletLayer::start_pass( bool decision )
 	static bool b_game_start = false;
 	if (!b_game_start && decision)
 	{
-		// å¼€å§‹æ¸¸æˆ <å¼€å¯è°ƒåº¦å™¨>
+		// ¿ªÊ¼ÓÎÏ· <¿ªÆôµ÷¶ÈÆ÷>
 		b_game_start = true;
 		schedule(schedule_selector(bulletLayer::add_bullet), 0.15f);
 	}
 	else if (b_game_start && !decision)
 	{
-		// æš‚åœæ¸¸æˆ <åœç”¨è°ƒåº¦å™¨çš„ä½¿ç”¨>
+		// ÔİÍ£ÓÎÏ· <Í£ÓÃµ÷¶ÈÆ÷µÄÊ¹ÓÃ>
 		b_game_start = false;
 		unschedule(schedule_selector(bulletLayer::add_bullet));
 	}

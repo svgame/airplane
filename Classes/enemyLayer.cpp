@@ -49,7 +49,7 @@ void enemyLayer::add_enemy(float dt)
 	enemySprite *sp_enemy = enemySprite::createWithSpriteFrame(
 		SpriteFrameCache::getInstance()->getSpriteFrameByName("enemy1.png") );
 		//(enemySprite *)enemySprite::createWithSpriteFrameName("enemy1.png");
-	sp_enemy->set_hp(2);	// 显式设置敌机生命值. 不设置默认=1 
+	sp_enemy->set_hp(1);	// 显式设置敌机生命值. 不设置默认=1 
 	sp_enemy->setPosition(Vec2(xsize.width*rand_fn, xsize.height));
 	this->addChild(sp_enemy);
 
