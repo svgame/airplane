@@ -15,9 +15,9 @@ public:
 	template<class sprite>
 	bool bullet_shoot_judge(sprite *enemy);
 
-	//子弹攻击力
-	int get_bullet_atk() { return bullet_atk; };
+	//设置子弹攻击力属性
 	void set_bullet_atk(int atk) { bullet_atk = atk; };
+	int get_bullet_atk() { return bullet_atk; };
 private:
 	bulletLayer();
 	~bulletLayer();
@@ -28,7 +28,7 @@ private:
 	cocos2d::SpriteBatchNode *sp_batch_bullet;
 	std::list<cocos2d::Sprite *> sp_bullet_array;
 
-	// 设置子弹攻击力
+	// 子弹攻击力属性
 	int bullet_atk;
 };
 
