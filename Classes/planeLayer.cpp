@@ -31,7 +31,7 @@ bool planeLayer::init()
 }
 
 // 飞机移动控制
-void planeLayer::move_to( Vec2 des_pos )
+void planeLayer::plane_move_to( Vec2 des_pos )
 {
 	Size xsize = Director::getInstance()->getVisibleSize();
 	// 飞机hero宽/高的一半

@@ -22,7 +22,7 @@ private:
 	bulletLayer();
 	~bulletLayer();
 
-	void add_bullet(float dt);
+	void bullet_insert(float dt);
 	void bullet_shoot_end(cocos2d::Sprite *psender);	/* 子弹射击结束处理，回收资源 */
 
 	cocos2d::SpriteBatchNode *sp_batch_bullet;

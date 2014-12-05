@@ -23,7 +23,7 @@ bool enemyLayer::init()
 	Size xsize = Director::getInstance()->getVisibleSize();
 
 	//add_enemy();
-	schedule(schedule_selector(enemyLayer::add_enemy), 0.5f);
+	schedule(schedule_selector(enemyLayer::enemy_insert), 0.5f);
 
 	// 预加载敌机爆炸动画资源。
 	Animation *animation = Animation::create();
@@ -41,7 +41,7 @@ bool enemyLayer::init()
 	return true;
 }
 
-void enemyLayer::add_enemy(float dt)
+void enemyLayer::enemy_insert(float dt)
 {
 	float rand_fn = cocos2d::random<float>(0.05f,0.95f);
 
@@ -59,12 +59,12 @@ void enemyLayer::add_enemy(float dt)
 	float xspeed = xheight/320*(cocos2d::random<float>(0.5f,1.2f)); /* 计算敌机需飞行的时间 */
 
 	MoveTo *move = MoveTo::create(xspeed, Vec2(sp_enemy->getPositionX(), 0));
-	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(enemyLayer::remove_enemy, this, sp_enemy));
+	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(enemyLayer::enemy_remove, this, sp_enemy));
 	sp_enemy->runAction(Sequence::create(move, callback, nullptr));
 	
 }
 
-void enemyLayer::remove_enemy( enemySprite *sp )
+void enemyLayer::enemy_remove( enemySprite *sp )
 {
  	if (sp != nullptr)
  	{
@@ -90,12 +90,12 @@ void enemyLayer::enemy_bomb(enemySprite* enemy)
 
 	Animation *animation = AnimationCache::getInstance()->animationByName("enemy1_down");
 	Animate *animate = Animate::create(animation);
-	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(enemyLayer::remove_enemy, this, enemy));
+	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(enemyLayer::enemy_remove, this, enemy));
 
 	enemy->runAction(Sequence::create(animate, callback, nullptr));
 }
 
-void enemyLayer::remove_all_enemy()
+void enemyLayer::enemy_remove_all()
 {
  	std::list<enemySprite *>::iterator iter = sp_enemy_list.begin();
  	for (iter; iter != sp_enemy_list.end(); )

@@ -16,6 +16,13 @@ public:
 	virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 	virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 	
+	void ufo_counts_update(int ncount = 1);
+	void ufo_touch_callback();
 private:
+	gameScene():_ufo_counts(0){};
+	~gameScene(){};
 	//void update(float dt);
+	
+	//ufo 数量统计
+	int _ufo_counts;
 };

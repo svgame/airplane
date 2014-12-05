@@ -145,6 +145,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\gameScene.cpp" />
     <ClCompile Include="..\Classes\planeLayer.cpp" />
     <ClCompile Include="..\Classes\startScene.cpp" />
+    <ClCompile Include="..\Classes\ufoLayer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +157,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\gameScene.h" />
     <ClInclude Include="..\Classes\planeLayer.h" />
     <ClInclude Include="..\Classes\startScene.h" />
+    <ClInclude Include="..\Classes\ufoLayer.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

@@ -34,7 +34,7 @@ bool bulletLayer::init()
 	return true;
 }
 
-void bulletLayer::add_bullet( float dt )
+void bulletLayer::bullet_insert( float dt )
 {
 	Size xsize = Director::getInstance()->getVisibleSize();
 	Sprite *sp_bullet = Sprite::createWithSpriteFrameName("bullet1.png");
@@ -60,13 +60,13 @@ void bulletLayer::start_pass( bool decision )
 	{
 		// 开始游戏 <开启调度器>
 		b_game_start = true;
-		schedule(schedule_selector(bulletLayer::add_bullet), 0.15f);
+		schedule(schedule_selector(bulletLayer::bullet_insert), 0.15f);
 	}
 	else if (b_game_start && !decision)
 	{
 		// 暂停游戏 <停用调度器的使用>
 		b_game_start = false;
-		unschedule(schedule_selector(bulletLayer::add_bullet));
+		unschedule(schedule_selector(bulletLayer::bullet_insert));
 	}
 }
 
