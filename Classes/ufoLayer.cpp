@@ -22,7 +22,7 @@ bool ufoLayer::init()
 	Size xsize = Director::getInstance()->getVisibleSize();
 
 	//ufo_insert();
-	schedule(schedule_selector(ufoLayer::ufo_insert), 5.f);
+	schedule(schedule_selector(ufoLayer::ufo_insert), 20.f);
 
 	// 加入碰撞检测调度器
 	schedule(schedule_selector(ufoLayer::ufo_crash_update), 0.1f);
@@ -66,7 +66,7 @@ void ufoLayer::ufo_crash_update( float dt )
 
 void ufoLayer::ufo_crash_jude()
 {
-	planeLayer *plane = (planeLayer *)this->getParent()->getChildByTag(2);
+	planeLayer *plane = (planeLayer *)this->getParent()->getChildByTag(nodeTag::plane);
 
 	std::list<Sprite *>::iterator iter = sp_ufo_list.begin();
 	for (iter; iter != sp_ufo_list.end(); )

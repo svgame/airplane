@@ -7,7 +7,6 @@ public:
 	CREATE_FUNC(bulletLayer);
 	virtual bool init();
 
-	void start_pass(bool decision = true);	/* <开始|暂停游戏> true: 开始，false: 暂停*/
 	/* 
 	 *  子弹的射击判定 ,敌机与子弹层上所有子弹的碰撞检测 
 	 *  如果有子弹与该敌机发生碰撞 return true; 否则 return false;

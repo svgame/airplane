@@ -1,6 +1,8 @@
 #include "enemyLayer.h"
 #include "bulletLayer.h"
 #include "planeLayer.h"
+#include "gameScene.h"
+#include "menuLayer.h"
 
 using namespace cocos2d;
 
@@ -28,15 +30,15 @@ bool enemyLayer::init()
 	// 预加载敌机爆炸动画资源。
 	Animation *animation = Animation::create();
 	animation->setDelayPerUnit(0.1f);	// 设置帧间间隔时间 **
-	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("enemy1_down1.png"));
-	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("enemy1_down2.png"));
-	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("enemy1_down3.png"));
-	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("enemy1_down4.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("enemy1_down1.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("enemy1_down2.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("enemy1_down3.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("enemy1_down4.png"));
 
 	AnimationCache::getInstance()->addAnimation(animation, "enemy1_down");
 
 	// 加入 敌机是否被击中判定 调度器
-	schedule(schedule_selector(enemyLayer::enemy_shoot_update), 0.1f);
+	schedule(schedule_selector(enemyLayer::enemy_shoot_update), 0.05f);
 
 	return true;
 }
@@ -88,11 +90,15 @@ void enemyLayer::enemy_bomb(enemySprite* enemy)
 	// 敌机被击中，先停止该敌机的所有动作，然后播放爆炸动作特效
 	enemy->stopAllActions();
 
-	Animation *animation = AnimationCache::getInstance()->animationByName("enemy1_down");
+	Animation *animation = AnimationCache::getInstance()->getAnimation("enemy1_down");
 	Animate *animate = Animate::create(animation);
 	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(enemyLayer::enemy_remove, this, enemy));
 
 	enemy->runAction(Sequence::create(animate, callback, nullptr));
+
+	// 更新游戏分数
+	menuLayer *menu = (menuLayer *)this->getParent()->getChildByTag(nodeTag::menu_layer);
+	menu->update_game_scores(100);
 }
 
 void enemyLayer::enemy_remove_all()
@@ -111,8 +117,9 @@ void enemyLayer::enemy_shoot_update( float dt )
 
 void enemyLayer::enemy_shoot_judge()
 {
-	bulletLayer *bullet = (bulletLayer *)this->getParent()->getChildByTag(3);
-	planeLayer *plane = (planeLayer *)this->getParent()->getChildByTag(2);
+	bulletLayer *bullet = (bulletLayer *)this->getParent()->getChildByTag(nodeTag::bullet);
+	planeLayer *plane = (planeLayer *)this->getParent()->getChildByTag(nodeTag::plane);
+	
 
 	std::list<enemySprite *>::iterator iter = sp_enemy_list.begin();
 	for (iter; iter != sp_enemy_list.end(); /*waring: iter++ 不能放在此处 */)

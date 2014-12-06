@@ -40,6 +40,12 @@ bool startScene::init()
 	sp_bg->setPosition(Vec2(xsize.width/2, xsize.height/2));
 	addChild(sp_bg);
     
+	//¼ÓÈëcopyright
+	Sprite* copyright=Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("shoot_copyright.png"));
+	copyright->setAnchorPoint(Vec2(0.5,0));
+	copyright->setPosition(Vec2(xsize.width/2,xsize.height/2));
+	this->addChild(copyright);
+
 	Sprite *sp_loading = Sprite::createWithSpriteFrameName("game_loading1.png");
 	sp_loading->setPosition(Vec2(xsize.width/2, xsize.height*0.45));
 	addChild(sp_loading);
@@ -91,4 +97,71 @@ void startScene::preload_music()
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/button.mp3");
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/game_music.mp3",true);
+}
+
+
+
+/*
+ *	gameoverScene 
+ */
+//int gameoverScene::_game_score = 0;
+
+Scene* gameoverScene::createScene(int nscore)
+{
+	
+	// 'scene' is an autorelease object
+	auto scene = Scene::create();
+	// 'layer' is an autorelease object
+	auto layer = gameoverScene::create();
+	// add layer as a child to scene
+	layer->show_game_score(nscore);
+	scene->addChild(layer);
+
+	// return the scene
+	return scene;
+}
+
+bool gameoverScene::init()
+{
+	if ( !Layer::init() )
+	{
+		return false;
+	}
+
+	Size xsize = Director::getInstance()->getVisibleSize();
+
+	// background
+	Sprite* background=Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("gameover.png"));
+	background->setPosition(Vec2(xsize.width/2,xsize.height/2));
+	this->addChild(background);
+
+	// show back game menuitem. 
+	Sprite* normalBackToGame=Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("btn_finish.png"));
+	Sprite* pressedBackToGame=Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("btn_finish.png"));
+	MenuItemSprite *menuitem = MenuItemSprite::create(
+	normalBackToGame,pressedBackToGame,CC_CALLBACK_0(gameoverScene::back_game_callback, this) );
+	menuitem->setPosition(Vec2(xsize.width-normalBackToGame->getContentSize().width/2-10,normalBackToGame->getContentSize().height/2+10));
+	Menu *menuBack=Menu::create(menuitem,NULL);
+	menuBack->setPosition(Vec2::ZERO);
+	this->addChild(menuBack);
+
+	// show score 
+	Label *score_label = Label::createWithBMFont("fonts/font.fnt", String::createWithFormat("%d",_game_score)->getCString() );
+	score_label->setPosition(Vec2(xsize.width/2, xsize.height/2));
+	score_label->setColor(Color3B(143,146,147));
+	this->addChild(score_label, 0, nodeTag::game_over_score);
+
+	return true;
+}
+
+void gameoverScene::back_game_callback()
+{
+	Director::getInstance()->replaceScene(TransitionSlideInL::create(1.f,gameScene::createScene()));
+}
+
+void gameoverScene::show_game_score( int nscore )
+{
+	this->_game_score = nscore;
+	((Label *)this->getChildByTag(nodeTag::game_over_score))->setString(
+		String::createWithFormat("%d",nscore)->getCString());
 }

@@ -1,9 +1,11 @@
 #include "gameScene.h"
+#include "startScene.h"
 #include "backgroundLayer.h"
 #include "planeLayer.h"
 #include "bulletLayer.h"
 #include "enemyLayer.h"
 #include "ufoLayer.h"
+#include "menuLayer.h"
 
 using namespace cocos2d;
 
@@ -33,21 +35,24 @@ bool gameScene::init()
 
 	// 滚动背景层
 	backgroundLayer *bg_layer = backgroundLayer::create();
-	addChild(bg_layer, 0, 1);
+	this->addChild(bg_layer, 0, nodeTag::background);
 	// 主飞机层
 	planeLayer *plane_layer = planeLayer::create();
-	addChild(plane_layer, 0, 2);
+	this->addChild(plane_layer, 0, nodeTag::plane);
 
 	// 主飞机子弹层
  	bulletLayer *bullet_layer = bulletLayer::create();
- 	addChild(bullet_layer, 0, 3);
+ 	this->addChild(bullet_layer, 0, nodeTag::bullet);
 
 	// 敌机层
 	enemyLayer *enemy_layer = enemyLayer::create();
-	addChild(enemy_layer, 0, 4);
+	this->addChild(enemy_layer, 0, nodeTag::enemy);
 
 	ufoLayer *ufo = ufoLayer::create();
-	addChild(ufo);
+	this->addChild(ufo, 0, nodeTag::ufo);
+
+ 	menuLayer *menu = menuLayer::create();
+ 	this->addChild(menu, 0, nodeTag::menu_layer);
 
 	// 屏幕触摸事件 
 	EventDispatcher *dispach = CCDirector::getInstance()->getEventDispatcher();
@@ -70,11 +75,15 @@ bool gameScene::onTouchBegan(Touch *touch, Event *unused_event)
 }
 void gameScene::onTouchMoved(Touch *touch, Event *unused_event)
 {
+	if ((Director::getInstance()->isPaused()))
+	{
+		return ;
+	}
 	Vec2 cur_pos = touch->getLocation();
 	Vec2 pre_pos = touch->getPreviousLocation();
 	Vec2 offset = cur_pos-pre_pos;	// 偏移量
-	Vec2 to_pos = ((Sprite *)(getChildByTag(2)->getChildByTag(10)))->getPosition() + offset;
-	((planeLayer *)getChildByTag(2))->plane_move_to(to_pos); //移动飞机 
+	Vec2 to_pos = ((Sprite *)(getChildByTag(nodeTag::plane)->getChildByTag(nodeTag::plane_sp)))->getPosition() + offset;
+	((planeLayer *)getChildByTag(nodeTag::plane))->plane_move_to(to_pos); //移动飞机 
 
 }
 
@@ -86,30 +95,30 @@ void gameScene::ufo_counts_update( int ncount /*= 1*/ )
 		return ;
 	}
 	cocos2d::Node *sp_ufo = nullptr;
-	if (!(sp_ufo = this->getChildByTag(5)))
+	if (!(sp_ufo = this->getChildByTag(nodeTag::ufo_counts)))
 	{
-		Sprite *sp = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("bomb.png"));
+		Sprite *sp = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("bomb.png"));
 		
 		MenuItemSprite *menuitem = MenuItemSprite::create(
 			sp,sp,CC_CALLBACK_0(gameScene::ufo_touch_callback, this) );
 		menuitem->setPosition(Vec2(sp->getContentSize().width/2+10,sp->getContentSize().height/2+10));
 		Menu *menu = Menu::create(menuitem, nullptr);
 		menu->setPosition(Vec2::ZERO);
-		this->addChild(menu, 0, 5);
+		this->addChild(menu, 0, nodeTag::ufo_counts);
 
 		sp_ufo = menu;
 	}
 	cocos2d::Label *sp_count = nullptr;
-	if (!(sp_count = (Label *)this->getChildByTag(6)))
+	if (!(sp_count = (Label *)this->getChildByTag(nodeTag::ufo_counts_label)))
 	{
-		Sprite *sp = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("bomb.png"));
+		Sprite *sp = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("bomb.png"));
 
 		Label *label = Label::createWithBMFont("fonts/font.fnt", 
 			String::createWithFormat("X%d",_ufo_counts)->getCString());
-		label->setColor(ccc3(143,146,147));
-		label->setAnchorPoint(ccp(0,0.5));
+		label->setColor(Color3B(143,146,147));
+		label->setAnchorPoint(Vec2(0,0.5));
 		label->setPosition(Vec2(sp->getContentSize().width*1.2, sp->getContentSize().height/2 + 5));
-		this->addChild(label, 0, 6);
+		this->addChild(label, 0, nodeTag::ufo_counts_label);
 
 		sp_count = label;
 	}
@@ -126,17 +135,23 @@ void gameScene::ufo_counts_update( int ncount /*= 1*/ )
 		sp_count->runAction(Show::create());
 	}
 
-	
 }
 
 void gameScene::ufo_touch_callback()
 {
-	enemyLayer *enemy = (enemyLayer *)this->getChildByTag(4);
-	if (enemy)
+	enemyLayer *enemy = (enemyLayer *)this->getChildByTag(nodeTag::enemy);
+	if (enemy && !(Director::getInstance()->isPaused()))
 	{
 		enemy->enemy_remove_all();
+		ufo_counts_update(-1);
 	}
-	ufo_counts_update(-1);
+	
+}
+
+void gameScene::game_over()
+{
+	Director::getInstance()->replaceScene(TransitionSlideInL::create(1.f,
+		gameoverScene::createScene(_game_score)) );
 }
 
 // void gameScene::update( float dt )

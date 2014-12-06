@@ -1,4 +1,5 @@
 #include "planeLayer.h"
+#include "gameScene.h"
 
 using namespace cocos2d;
 
@@ -13,7 +14,7 @@ bool planeLayer::init()
 	// 加载主角精灵
 	sp_hero = Sprite::createWithSpriteFrameName("hero1.png");
 	sp_hero->setPosition(Vec2(xsize.width/2, xsize.height*0.1));
-	addChild(sp_hero, 0, 10);
+	this->addChild(sp_hero, 0, nodeTag::plane_sp);
 
 	// 设置主角入场动画
 	Blink *blink = Blink::create(1.0f, 4); // 闪烁动作， 一秒钟闪烁三次
@@ -61,10 +62,10 @@ void planeLayer::plane_bomb()
 {
 	Animation* animation=Animation::create();
 	animation->setDelayPerUnit(0.2f);
-	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("hero_blowup_n1.png"));
-	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("hero_blowup_n2.png"));
-	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("hero_blowup_n3.png"));
-	animation->addSpriteFrame(SpriteFrameCache::getInstance()->spriteFrameByName("hero_blowup_n4.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("hero_blowup_n1.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("hero_blowup_n2.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("hero_blowup_n3.png"));
+	animation->addSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("hero_blowup_n4.png"));
 
 	Animate* animate=Animate::create(animation);
 	sp_hero->runAction(animate);

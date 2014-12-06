@@ -17,4 +17,20 @@ private:
 	void preload_music();
 };
 
+class gameoverScene : public cocos2d::Layer
+{
+public:
+	CREATE_FUNC(gameoverScene);
+	static cocos2d::Scene* createScene(int nscore);
+	virtual bool init(); 
+
+private:
+	gameoverScene():_game_score(0){};
+	~gameoverScene(){};
+
+	void show_game_score(int nscore);
+	void back_game_callback();
+	/*static */int _game_score;
+};
+
 #endif // __HELLOWORLD_SCENE_H__
