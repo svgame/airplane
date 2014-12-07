@@ -17,8 +17,6 @@ using namespace cocos2d;
 class enemyType
 {
 public:
-	enemyType(){};
-	~enemyType(){};
 	//virtual void init() {};	//敌机涉及的所有动画均在init() 中预加载
 	virtual int get_enemy_hp() = 0;		// 敌机生命值
 	virtual int get_score_ratio() = 0;	// 敌机分数比例 <实际分数=ration*100>
@@ -31,7 +29,7 @@ public:
 /*
  *  敌机实例定义
  */
-class enemySmall:public enemyType
+class enemySmall : public enemyType
 {
 public:
 	enemySmall();
@@ -54,7 +52,7 @@ private:
 	std::string enemy_move_animation_name;
 };
 
-class enemyMedium:public enemyType
+class enemyMedium : public enemyType
 {
 public:
 	enemyMedium();
@@ -77,7 +75,7 @@ private:
 	std::string enemy_move_animation_name;
 };
 
-class enemyLarge:public enemyType
+class enemyLarge : public enemyType
 {
 public:
 	enemyLarge();
@@ -208,7 +206,7 @@ void enemyLayer<enemyType>::enemy_bomb_clean( enemySprite *sp )
 template<class enemyType>
 void enemyLayer<enemyType>::enemy_bomb(enemySprite* enemy)  
 {  
-	// 爆炸动作播放前，先将该敌机从敌机列表中踢出
+	//** 爆炸动作播放前，先将该敌机从敌机列表中踢出 **
 	sp_enemy_list.remove(enemy);
 	// 敌机被击中，先停止该敌机的所有动作，然后播放爆炸动作特效
 	enemy->stopAllActions();
@@ -217,11 +215,18 @@ void enemyLayer<enemyType>::enemy_bomb(enemySprite* enemy)
 	//CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/enemy1_down.mp3");
 
 	// 执行爆炸动画
-	Animation *animation = AnimationCache::getInstance()->getAnimation(enemy_type.get_bomb_animation_name());
-	Animate *animate = Animate::create(animation);
-	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(enemyLayer::enemy_remove, this, enemy));
+	if (!enemy_type.get_bomb_animation_name().empty())
+	{
+		Animation *animation = AnimationCache::getInstance()->getAnimation(enemy_type.get_bomb_animation_name());
+		Animate *animate = Animate::create(animation);
+		CallFunc *callback = CallFunc::create(CC_CALLBACK_0(enemyLayer::enemy_bomb_clean, this, enemy));
 
-	enemy->runAction(Sequence::create(animate, callback, nullptr));
+		enemy->runAction(Sequence::create(animate, callback, nullptr));
+	}
+	else // 如果没设置爆炸动画，则直接移除
+	{
+		enemy_remove(enemy);
+	}
 
 	// 更新游戏分数
 	menuLayer *menu = (menuLayer *)this->getParent()->getChildByTag(nodeTag::menu_layer);

@@ -12,7 +12,15 @@ LOCAL_MODULE_FILENAME := libcocos2dcpp
 
 LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/AppDelegate.cpp \
-                   ../../Classes/HelloWorldScene.cpp
+                   ../../Classes/backgroundLayer.cpp \
+				   ../../Classes/bulletLayer.cpp \
+				   ../../Classes/controlLayer.cpp \
+				   ../../Classes/enemyLayer.cpp \
+				   ../../Classes/enemySprite.cpp \
+				   ../../Classes/gameScene.cpp \
+				   ../../Classes/planeLayer.cpp \
+				   ../../Classes/startScene.cpp \
+				   ../../Classes/ufoLayer.cpp 
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 

@@ -36,7 +36,7 @@ template<class sprite>
 bool bulletLayer::bullet_shoot_judge( sprite *enemy )
 {
 	bool bret = false;
-	std::list<Sprite *>::iterator iter = sp_bullet_array.begin();
+	std::list<cocos2d::Sprite *>::iterator iter = sp_bullet_array.begin();
 	for (iter; iter != sp_bullet_array.end(); /*waring: iter++ 不能放在此处 */)
 	{
 		if ((*iter)->getBoundingBox().intersectsRect(enemy->getBoundingBox()))

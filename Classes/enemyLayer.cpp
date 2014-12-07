@@ -70,7 +70,7 @@ void enemyLarge::init()
 {
 	// 预加载敌机爆炸动画资源。
 	cocos2d::Animation *animation = cocos2d::Animation::create();
-	animation->setDelayPerUnit(0.1f);	// 设置帧间间隔时间 **
+	animation->setDelayPerUnit(0.2f);	// 设置帧间间隔时间 **
 	animation->addSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName("enemy3_down1.png"));
 	animation->addSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName("enemy3_down2.png"));
 	animation->addSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName("enemy3_down3.png"));
