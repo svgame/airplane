@@ -143,7 +143,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\enemyLayer.cpp" />
     <ClCompile Include="..\Classes\enemySprite.cpp" />
     <ClCompile Include="..\Classes\gameScene.cpp" />
-    <ClCompile Include="..\Classes\menuLayer.cpp" />
+    <ClCompile Include="..\Classes\controlLayer.cpp" />
     <ClCompile Include="..\Classes\planeLayer.cpp" />
     <ClCompile Include="..\Classes\startScene.cpp" />
     <ClCompile Include="..\Classes\ufoLayer.cpp" />
@@ -156,7 +156,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\enemyLayer.h" />
     <ClInclude Include="..\Classes\enemySprite.h" />
     <ClInclude Include="..\Classes\gameScene.h" />
-    <ClInclude Include="..\Classes\menuLayer.h" />
+    <ClInclude Include="..\Classes\controlLayer.h" />
     <ClInclude Include="..\Classes\planeLayer.h" />
     <ClInclude Include="..\Classes\startScene.h" />
     <ClInclude Include="..\Classes\ufoLayer.h" />

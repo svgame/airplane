@@ -10,7 +10,7 @@ public:
 
 	void pass_resume(bool decision);	//设置背景的状态 <暂停|恢复游戏> true:暂停 ,false:继续游戏
 private:
-	backgroundLayer():nSpeed(8){};
+	backgroundLayer():nSpeed(3){};
 
 	void update(float df);	/* 背景滚动更新，调度器回调 */
 

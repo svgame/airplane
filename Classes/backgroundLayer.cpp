@@ -21,7 +21,7 @@ bool backgroundLayer::init()
 
 	// Æô¶¯µ÷¶ÈÆ÷
 	//scheduleUpdate();
-	schedule(schedule_selector(backgroundLayer::update), 0.1f);
+	schedule(schedule_selector(backgroundLayer::update), 0.02f);
 
 	return true;
 }

@@ -1,6 +1,7 @@
 #include "ufoLayer.h"
 #include "planeLayer.h"
 #include "gameScene.h"
+#include "controlLayer.h"
 
 using namespace cocos2d;
 
@@ -74,11 +75,10 @@ void ufoLayer::ufo_crash_jude()
 		Sprite *ufo = *iter++;
 		if (plane->plane_crash_judge(ufo, false))
 		{
-			// todo: 飞机吃到ufo。
 			CCLOG("plane crash ufo.");
 			ufo_remove(ufo);
-
-			((gameScene *)this->getParent())->ufo_counts_update();
+			// 更新ufo数
+			((menuLayer *)this->getParent()->getChildByTag(nodeTag::menu_layer))->ufo_counts_update();
 		}
 	}
 }

@@ -2,6 +2,8 @@
 #include "planeLayer.h"
 #include "gameScene.h"
 
+#include "SimpleAudioEngine.h"
+
 using namespace cocos2d;
 
 bulletLayer::bulletLayer()
@@ -37,10 +39,15 @@ bool bulletLayer::init()
 
 void bulletLayer::bullet_insert( float dt )
 {
+	//播放音效
+	//CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/bullet.mp3");
+
 	Size xsize = Director::getInstance()->getVisibleSize();
+	// 添加子弹精灵
 	Sprite *sp_bullet = Sprite::createWithSpriteFrameName("bullet1.png");
 	sp_batch_bullet->addChild(sp_bullet);
 
+	// 设置子弹精灵的初始位置随飞机当前的位置
 	Sprite * sp_hero= (Sprite *)(this->getParent()->getChildByTag(nodeTag::plane))->getChildByTag(nodeTag::plane_sp);	
 	Vec2 curpos = sp_hero->getPosition() + Vec2(0, sp_hero->getContentSize().height/2);
 	sp_bullet->setPosition(curpos);
@@ -52,17 +59,16 @@ void bulletLayer::bullet_insert( float dt )
 	float xheight = xsize.height - curpos.y;
 	float xspeed = xheight/480; 
 
+	// 执行子弹精灵 射击动作
 	MoveTo *move = MoveTo::create(xspeed, Vec2(sp_bullet->getPositionX(), xsize.height));
 	CallFunc *callback = CallFunc::create(CC_CALLBACK_0(bulletLayer::bullet_shoot_end, this, sp_bullet));
 	sp_bullet->runAction(Sequence::create(move, callback, nullptr));
 }
 
-void bulletLayer::bullet_shoot_end(Sprite *psender)
+void bulletLayer::bullet_shoot_end(Sprite *bullet)
 {
-	if(psender != nullptr)
+	if(bullet != nullptr)
 	{
-		Sprite* bullet=(Sprite*)psender;
-
 		sp_bullet_array.remove(bullet);
 		this->sp_batch_bullet->removeChild(bullet,true);
 	}

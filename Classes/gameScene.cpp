@@ -5,7 +5,7 @@
 #include "bulletLayer.h"
 #include "enemyLayer.h"
 #include "ufoLayer.h"
-#include "menuLayer.h"
+#include "controlLayer.h"
 
 using namespace cocos2d;
 
@@ -45,9 +45,16 @@ bool gameScene::init()
  	this->addChild(bullet_layer, 0, nodeTag::bullet);
 
 	// 敌机层
-	enemyLayer *enemy_layer = enemyLayer::create();
-	this->addChild(enemy_layer, 0, nodeTag::enemy);
+	enemyLayer<enemySmall> *enemy_small = enemyLayer<enemySmall>::create();
+	this->addChild(enemy_small, 0, nodeTag::enemy_small);
 
+	enemyLayer<enemyMedium> *enemy_medium = enemyLayer<enemyMedium>::create();
+	this->addChild(enemy_medium, 0, nodeTag::enemy_medium);
+	
+	enemyLayer<enemyLarge> *enemy_large = enemyLayer<enemyLarge>::create();
+	this->addChild(enemy_large, 0, nodeTag::enemy_large);
+
+	// ufo
 	ufoLayer *ufo = ufoLayer::create();
 	this->addChild(ufo, 0, nodeTag::ufo);
 
@@ -63,7 +70,12 @@ bool gameScene::init()
 	dispach->addEventListenerWithSceneGraphPriority(listen, this);
 
 	//////////////////////////////////////////////////////////////////////////
-	//scheduleUpdate();
+	// 移动设备键盘按键响应事件
+	auto keyboardlisten = EventListenerKeyboard::create();
+	keyboardlisten->onKeyPressed = CC_CALLBACK_2(gameScene::onKeyPressed, this);
+	keyboardlisten->onKeyReleased = CC_CALLBACK_2(gameScene::onKeyReleased, this);
+
+	dispach->addEventListenerWithSceneGraphPriority(keyboardlisten,this);
 
 	return true;
 }
@@ -87,74 +99,25 @@ void gameScene::onTouchMoved(Touch *touch, Event *unused_event)
 
 }
 
-void gameScene::ufo_counts_update( int ncount /*= 1*/ )
+// 键盘事件 
+void gameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
-	_ufo_counts += ncount;
-	if (_ufo_counts < 0)
-	{
-		return ;
-	}
-	cocos2d::Node *sp_ufo = nullptr;
-	if (!(sp_ufo = this->getChildByTag(nodeTag::ufo_counts)))
-	{
-		Sprite *sp = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("bomb.png"));
-		
-		MenuItemSprite *menuitem = MenuItemSprite::create(
-			sp,sp,CC_CALLBACK_0(gameScene::ufo_touch_callback, this) );
-		menuitem->setPosition(Vec2(sp->getContentSize().width/2+10,sp->getContentSize().height/2+10));
-		Menu *menu = Menu::create(menuitem, nullptr);
-		menu->setPosition(Vec2::ZERO);
-		this->addChild(menu, 0, nodeTag::ufo_counts);
-
-		sp_ufo = menu;
-	}
-	cocos2d::Label *sp_count = nullptr;
-	if (!(sp_count = (Label *)this->getChildByTag(nodeTag::ufo_counts_label)))
-	{
-		Sprite *sp = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("bomb.png"));
-
-		Label *label = Label::createWithBMFont("fonts/font.fnt", 
-			String::createWithFormat("X%d",_ufo_counts)->getCString());
-		label->setColor(Color3B(143,146,147));
-		label->setAnchorPoint(Vec2(0,0.5));
-		label->setPosition(Vec2(sp->getContentSize().width*1.2, sp->getContentSize().height/2 + 5));
-		this->addChild(label, 0, nodeTag::ufo_counts_label);
-
-		sp_count = label;
-	}
-	sp_count->setString(String::createWithFormat("X%d",_ufo_counts)->getCString());
-
-	if (_ufo_counts == 0)
-	{
-		sp_ufo->runAction(Hide::create());
-		sp_count->runAction(Hide::create());
-	}
-	else
-	{
-		sp_ufo->runAction(Show::create());
-		sp_count->runAction(Show::create());
-	}
-
 }
 
-void gameScene::ufo_touch_callback()
+void gameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
-	enemyLayer *enemy = (enemyLayer *)this->getChildByTag(nodeTag::enemy);
-	if (enemy && !(Director::getInstance()->isPaused()))
+	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE)
 	{
-		enemy->enemy_remove_all();
-		ufo_counts_update(-1);
+		CCLOG("exit game. ");
+		Director::getInstance()->end();
 	}
-	
 }
 
 void gameScene::game_over()
 {
-	Director::getInstance()->replaceScene(TransitionSlideInL::create(1.f,
-		gameoverScene::createScene(_game_score)) );
+	Director::getInstance()->replaceScene(
+		TransitionSlideInR::create( 1.f, gameoverScene::createScene( 
+			((menuLayer *)this->getChildByTag(nodeTag::menu_layer))->get_game_scores() ) )
+		);
 }
 
-// void gameScene::update( float dt )
-// {
-// 
-// }

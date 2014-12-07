@@ -24,13 +24,16 @@ public:
 	static cocos2d::Scene* createScene(int nscore);
 	virtual bool init(); 
 
+	// ¼üÅÌÊÂ¼þ 
+	virtual void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+	virtual void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 private:
 	gameoverScene():_game_score(0){};
 	~gameoverScene(){};
 
 	void show_game_score(int nscore);
 	void back_game_callback();
-	/*static */int _game_score;
+	int _game_score;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

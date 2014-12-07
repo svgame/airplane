@@ -16,7 +16,10 @@ enum nodeTag
 	ufo = 10,
 	ufo_counts,
 	ufo_counts_label,
-	enemy = 20
+	enemy = 20,
+	enemy_small,
+	enemy_medium,
+	enemy_large
 };
 
 class gameScene : public cocos2d::Layer
@@ -32,19 +35,12 @@ public:
 	// 触摸事件
 	virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 	virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event);
-	
-	void ufo_counts_update(int ncount = 1);
-	void ufo_touch_callback();
+	// 键盘事件 
+	virtual void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+	virtual void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 
-	void update_game_score(int nscore){_game_score = nscore; };
-	void game_over();
+	void game_over();	// 游戏结束，跳转
 private:
-	gameScene():_ufo_counts(0),_game_score(0){};
+	gameScene(){};
 	~gameScene(){};
-	//void update(float dt);
-	
-	//ufo 数量统计
-	int _ufo_counts;
-	// game score
-	int _game_score;
 };

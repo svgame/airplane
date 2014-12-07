@@ -1,5 +1,6 @@
 #include "startScene.h"
 #include "gameScene.h"
+#include "controlLayer.h"
 
 #include "SimpleAudioEngine.h"
 
@@ -69,6 +70,9 @@ bool startScene::init()
 	//sp_loading->runAction(repeat);
 	sp_loading->runAction(sequence);
 
+	// read config file.
+	fileUnit::getInstance()->read_config_file();
+
     return true;
 }
 
@@ -104,20 +108,14 @@ void startScene::preload_music()
 /*
  *	gameoverScene 
  */
-//int gameoverScene::_game_score = 0;
-
 Scene* gameoverScene::createScene(int nscore)
 {
-	
-	// 'scene' is an autorelease object
 	auto scene = Scene::create();
-	// 'layer' is an autorelease object
 	auto layer = gameoverScene::create();
-	// add layer as a child to scene
+	
 	layer->show_game_score(nscore);
 	scene->addChild(layer);
 
-	// return the scene
 	return scene;
 }
 
@@ -141,7 +139,7 @@ bool gameoverScene::init()
 	MenuItemSprite *menuitem = MenuItemSprite::create(
 	normalBackToGame,pressedBackToGame,CC_CALLBACK_0(gameoverScene::back_game_callback, this) );
 	menuitem->setPosition(Vec2(xsize.width-normalBackToGame->getContentSize().width/2-10,normalBackToGame->getContentSize().height/2+10));
-	Menu *menuBack=Menu::create(menuitem,NULL);
+	Menu *menuBack=Menu::create(menuitem,nullptr);
 	menuBack->setPosition(Vec2::ZERO);
 	this->addChild(menuBack);
 
@@ -150,6 +148,23 @@ bool gameoverScene::init()
 	score_label->setPosition(Vec2(xsize.width/2, xsize.height/2));
 	score_label->setColor(Color3B(143,146,147));
 	this->addChild(score_label, 0, nodeTag::game_over_score);
+
+	// show history best score.
+	Label *best_score_label = Label::createWithBMFont("fonts/font.fnt", 
+		String::createWithFormat("%d", fileUnit::getInstance()->get_best_score())->getCString());
+	best_score_label->setColor(ccc3(143,146,147));
+	best_score_label->setAnchorPoint(ccp(0,0.5));
+	best_score_label->setPosition(Vec2(140,xsize.height-30));
+	this->addChild(best_score_label);
+
+	//////////////////////////////////////////////////////////////////////////
+	// 移动设备键盘按键响应事件
+	EventDispatcher *dispach = CCDirector::getInstance()->getEventDispatcher();
+	auto keyboardlisten = EventListenerKeyboard::create();
+	keyboardlisten->onKeyPressed = CC_CALLBACK_2(gameoverScene::onKeyPressed, this);
+	keyboardlisten->onKeyReleased = CC_CALLBACK_2(gameoverScene::onKeyReleased, this);
+
+	dispach->addEventListenerWithSceneGraphPriority(keyboardlisten,this);
 
 	return true;
 }
@@ -164,4 +179,24 @@ void gameoverScene::show_game_score( int nscore )
 	this->_game_score = nscore;
 	((Label *)this->getChildByTag(nodeTag::game_over_score))->setString(
 		String::createWithFormat("%d",nscore)->getCString());
+
+	// update the best score.
+	fileUnit::getInstance()->update_best_score(this->_game_score);
+	fileUnit::getInstance()->save_config_file();
 }
+
+// 键盘事件 
+void gameoverScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
+{
+}
+
+void gameoverScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
+{
+	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE)
+	{
+		CCLOG("exit game. ");
+		fileUnit::getInstance()->save_config_file();
+		Director::getInstance()->end();
+	}
+}
+
